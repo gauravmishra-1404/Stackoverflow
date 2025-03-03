@@ -1184,7 +1184,6 @@
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    showLoginPrompt();
                     throw new Error('You must be logged in to vote');
                 }
                 return response.json().then(data => {
@@ -1204,6 +1203,7 @@
                 questionDownVoteBtn.classList.toggle('active');
                 questionUpVoteBtn.classList.remove('active');
             }
+            showErrorToast(data.message);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -1228,7 +1228,6 @@
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    showLoginPrompt();
                     throw new Error('You must be logged in to vote');
                 }
                 return response.json().then(data => {
@@ -1251,6 +1250,7 @@
                 downButton.classList.toggle('active');
                 upButton.classList.remove('active');
             }
+            showErrorToast(data.message);
         })
         .catch(error => {
             console.error('Error:', error);
