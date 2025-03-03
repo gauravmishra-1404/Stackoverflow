@@ -72,10 +72,6 @@ public class QuestionServiceImpl implements QuestionService {
         question.setExcerpt(questionDTO.getExcerpt());
         question.setImageURL(mainImageUrl);
 
-        if (questionDTO.getUser() != null) {
-            question.setUser(modelMapper.map(questionDTO.getUser(), User.class));
-        }
-
         LocalDateTime now = LocalDateTime.now();
         question.setCreatedAt(now);
         question.setUpdatedAt(now);
@@ -101,7 +97,7 @@ public class QuestionServiceImpl implements QuestionService {
             }
         }
         question.setTags(tags);
-
+        question.setUser(questionDTO.getUser());
         Question savedQuestion = questionRepository.save(question);
         logger.info("Question saved with ID: {} and content: {}", savedQuestion.getId(), savedQuestion.getContent());
 

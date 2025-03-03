@@ -1,5 +1,7 @@
 package com.springapp.stackoverflow.dto;
 
+import com.springapp.stackoverflow.model.User;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class QuestionDTO {
     private int viewsCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserDTO user;
+    private User user;
     private List<String> tags;
     private String imageURL;
 
@@ -90,11 +92,11 @@ public class QuestionDTO {
         this.updatedAt = updatedAt;
     }
 
-    public UserDTO getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

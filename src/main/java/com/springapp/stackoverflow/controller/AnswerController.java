@@ -4,12 +4,14 @@ import com.springapp.stackoverflow.dto.AnswerDTO;
 import com.springapp.stackoverflow.dto.QuestionDTO;
 import com.springapp.stackoverflow.model.Question;
 import com.springapp.stackoverflow.repository.QuestionRepository;
+import com.springapp.stackoverflow.security.CustomUserDetails;
 import com.springapp.stackoverflow.service.AnswerService;
 import com.springapp.stackoverflow.service.CloudinaryService;
 import com.springapp.stackoverflow.service.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,12 +53,8 @@ public class AnswerController {
             @RequestParam(value = "contentBlocksData", required = false) String[] contentBlocksData,
             @RequestParam(value = "contentBlockTypes", required = false) String contentBlockTypes,
             @RequestParam(value = "contentImages", required = false) MultipartFile[] contentImages,
-            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            return "question-details";
-        }
 
         try {
             StringBuilder contentBuilder = new StringBuilder();
@@ -111,6 +109,10 @@ public class AnswerController {
                         }
                     }
                 }
+            }
+
+            if(userDetails != null){
+                answerDTO.setUserId(userDetails.getUser().getId());
             }
 
             // Set the content to the AnswerDTO

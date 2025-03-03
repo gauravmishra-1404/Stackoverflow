@@ -874,14 +874,14 @@
                                 </div>
                                 <div class="user-gravatar">
                                     <a th:href="@{/users/{id}(id=${question.user.id})}">
-                                        <img th:src="${question.user.avatarUrl ?: '/images/default-avatar.png'}"
+                                        <img th:src="${question.user.profilePic ?: '/images/default-avatar.png'}"
                                              alt="User avatar">
                                     </a>
                                 </div>
                                 <div class="user-details">
                                     <a th:href="@{/users/{id}(id=${question.user.id})}"
-                                       th:text="${question.user.displayName}">Username</a>
-                                    <div class="user-reputation" th:text="${question.user.reputation}">123</div>
+                                       th:text="${question.user.name}">Username</a>
+                                    <div class="user-reputation" th:text="${question.user.reputations}">123</div>
                                 </div>
                             </div>
                         </div>
@@ -970,12 +970,13 @@
                             <!-- Answer actions -->
                             <div class="post-actions">
                                 <!-- User card for answer -->
-                                <div class="user-info" th:if="${answer.userName != null}">
+                                <div class="user-info">
                                     <div class="user-action-time">
                                         answered <span th:text="${#temporals.format(answer.createdAt, 'MMM d, yyyy')}">Feb 20, 2023</span>
                                     </div>
                                     <div class="user-details">
-                                        <a href="#" th:text="${answer.userName}">Username</a>
+                                        <a href="#" th:if="${answer.userName != null}" th:text="${answer.userName}">Username</a>
+                                        <span th:if="${answer.userName == null}">anonymous</span>
                                     </div>
                                 </div>
 
