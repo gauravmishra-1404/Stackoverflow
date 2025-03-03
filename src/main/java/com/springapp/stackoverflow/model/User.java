@@ -27,7 +27,7 @@ public class User {
     private String bio;
 
     @Column(name="role")
-    private String role;
+    private String role = "AUTHOR";
 
     @ElementCollection
     private List<String> interestedTopics;

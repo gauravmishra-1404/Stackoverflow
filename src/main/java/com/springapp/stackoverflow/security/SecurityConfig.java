@@ -26,7 +26,6 @@ public class SecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(this.getUserDetailService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
-
     }
 
     @Bean
@@ -46,7 +45,7 @@ public class SecurityConfig {
                                 "/logout/**",
                                 "/profile/**",
                                 "/change-password/**",
-                                "questions/**"
+                                "/questions/**"
                         ).permitAll()
                         .requestMatchers(
                                "/questions/{id}/comment/**",
@@ -78,28 +77,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsManager() {
-//
-//        UserDetails john = User.builder()
-//                .username("john")
-//                .password("{noop}test123")
-//                .roles("ADMIN")
-//                .build();
-//
-//        UserDetails mary = User.builder()
-//                .username("mary")
-//                .password("{noop}test123")
-//                .roles("EMPLOYEE", "MANAGER")
-//                .build();
-//
-//        UserDetails susan = User.builder()
-//                .username("susan")
-//                .password("{noop}test123")
-//                .roles("EMPLOYEE", "MANAGER", "ADMIN")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(john, mary, susan);
-//    }
 }

@@ -30,22 +30,6 @@ public class UserController {
         return "login";
     }
 
-    // Process login form submission
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute LoginRequest loginRequest,
-                               HttpSession session,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            User user = userService.login(loginRequest);
-            session.setAttribute("userId", user.getId());
-            session.setAttribute("username", user.getUsername());
-            return "redirect:/questions";
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/login";
-        }
-    }
-
     // Display the signup page
     @GetMapping("/signup")
     public String showSignupPage(Model model) {
