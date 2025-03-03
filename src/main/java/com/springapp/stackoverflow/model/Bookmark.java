@@ -4,23 +4,20 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "votes")
-public class Vote {
+@Table(name = "bookmarks")
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Renamed from voteId to id for consistency
+    private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Question question;
-
-    @ManyToOne
-    private Answer answer;
-
-    private int vote; // 1 for upvote, -1 for downvote
 
     private LocalDateTime createdAt;
 
@@ -46,22 +43,6 @@ public class Vote {
 
     public void setQuestion(Question question) {
         this.question = question;
-    }
-
-    public Answer getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
-    }
-
-    public int getVote() {
-        return vote;
-    }
-
-    public void setVote(int vote) {
-        this.vote = vote;
     }
 
     public LocalDateTime getCreatedAt() {

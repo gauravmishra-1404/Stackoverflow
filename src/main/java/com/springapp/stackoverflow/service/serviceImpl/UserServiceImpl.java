@@ -36,16 +36,15 @@ public class UserServiceImpl implements UserService {
         }
 
         // Create new user
-        User user = User.builder()
-                .name(request.getName())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .interestedTopics(request.getInterestedTopics())
-                .reputations(0)
-                .createdAt(LocalDateTime.now())
-                .savedQuestions(new ArrayList<>())
-                .build();
+        User user = new User();
+        user.setName(request.getName());
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setInterestedTopics(request.getInterestedTopics());
+        user.setReputations(0);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setSavedQuestions(new ArrayList<>());
 
         return userRepository.save(user);
     }
