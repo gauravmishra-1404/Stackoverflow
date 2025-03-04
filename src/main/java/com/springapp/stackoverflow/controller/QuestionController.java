@@ -3,6 +3,8 @@ package com.springapp.stackoverflow.controller;
 import com.springapp.stackoverflow.dto.AnswerDTO;
 import com.springapp.stackoverflow.dto.QuestionDTO;
 import com.springapp.stackoverflow.model.Tag;
+import com.springapp.stackoverflow.model.User;
+import com.springapp.stackoverflow.security.CustomUserDetails;
 import com.springapp.stackoverflow.service.AnswerService;
 import com.springapp.stackoverflow.service.CloudinaryService;
 import com.springapp.stackoverflow.service.QuestionService;
@@ -61,12 +63,8 @@ public class QuestionController {
             @RequestParam(value = "contentBlocksData", required = false) String[] contentBlocksData,
             @RequestParam(value = "contentBlockTypes", required = false) String[] contentBlockTypes,
             @RequestParam(value = "contentImages", required = false) MultipartFile[] contentImages,
-            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            return "ask-question-page";
-        }
 
         try {
             StringBuilder contentBuilder = new StringBuilder();
@@ -104,7 +102,11 @@ public class QuestionController {
                     }
                 }
             }
-
+            if(userDetails != null){
+                User user = new User();
+                user.setId(userDetails.getUser().getId());
+                questionDTO.setUser(user);
+            }
             questionDTO.setContent(contentBuilder.toString());
             //QuestionDTO savedQuestion = questionService.createQuestion(questionDTO, null, contentImageUrls);
             QuestionDTO savedQuestion = questionService.createQuestion(questionDTO, contentBuilder.toString(), contentImageUrls);

@@ -418,7 +418,7 @@
         <input type="hidden" name="contentBlocksData" id="contentBlocksData">
         <input type="hidden" name="contentBlockTypes" id="contentBlockTypes">
         <input type="hidden" th:if="${isEditMode}" th:field="*{id}">
-        <input type="hidden" name="content" id="content">
+        <input type="hidden" th:field="*{content}" id="content">
 
         <!-- Title Section -->
         <div class="form-section">
@@ -505,8 +505,7 @@
 
         <!-- Submit Button -->
         <div class="flex justify-end gap-4 mb-8">
-            <button type="submit" class="next-button">
-                Post Your Question
+            <button type="submit" class="next-button" th:text="${isEditMode == null?'Post Your Question' : 'Edit your Question'}">
             </button>
         </div>
     </form>
@@ -516,7 +515,6 @@
     // Content Block Management
     let contentBlocks = [];
     const contentBlocksContainer = document.getElementById('contentBlocks');
-
     function addTextBlock() {
         // Clear placeholder if it exists
         const placeholder = contentBlocksContainer.querySelector('.editor-placeholder');
@@ -696,7 +694,16 @@
     const tagInput = document.getElementById('tagInput');
     const selectedTags = document.getElementById('selectedTags');
     const tagsInput = document.getElementById('tagsInput');
-
+    initialiseTags()
+    function initialiseTags(){
+        tagsInput.value.split(',').forEach((tagStr)=>{
+            tagStr = tagStr.trim().toLowerCase();
+            if (tagStr && !tags.includes(tagStr) && tags.length < 5) {
+                tags.push(tagStr);
+            }
+        })
+        updateTags()
+    }
     function updateTags() {
         selectedTags.innerHTML = '';
         tags.forEach((tag, index) => {
@@ -806,7 +813,7 @@
             // Submit the form
             const submitButton = this.querySelector('button[type="submit"]');
             submitButton.disabled = true;
-            submitButton.textContent = 'Posting...';
+            submitButton.textContent = 'Processing...';
 
             try {
                 const response = await fetch(this.action, {
@@ -826,7 +833,7 @@
                     window.location.href = match[1];
                 } else {
                     // If no redirect found, show success message
-                    alert('Question submitted successfully!');
+                    alert('Operation successful !');
                     window.location.href = '/questions';
                 }
             } catch (error) {
@@ -857,11 +864,17 @@
 
                 if (imageMatch) {
                     // This is an image block
-                    contentBlocks.push({
+                    var blockTemp = {
                         id: blockId,
                         type: 'image',
-                        existingUrl: imageMatch[1]
-                    });
+                        existingUrl: imageMatch[1],
+                        file: ''
+                    }
+                    urlToFile(imageMatch[1])
+                        .then(file => blockTemp.file = file)
+                        .catch(error => console.error(error));
+
+                    contentBlocks.push(blockTemp);
                 } else if (block.trim()) {
                     // This is a text block
                     contentBlocks.push({
@@ -874,6 +887,13 @@
 
             renderBlocks();
         }
+    }
+
+    async function urlToFile(imageUrl, fileName = 'image.jpg') {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], fileName, { type: blob.type });
+        return file;
     }
 
     function updateContentField() {
@@ -890,6 +910,7 @@
             contentField.value = content;
         }
     }
+    initializeExistingContent()
 </script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 package com.springapp.stackoverflow.controller;
 
+import com.springapp.stackoverflow.security.CustomUserDetails;
 import com.springapp.stackoverflow.service.VoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,9 +21,13 @@ public class VoteController {
     @PostMapping("/question/{questionId}")
     public ResponseEntity<?> voteQuestion(
             @PathVariable Long questionId,
-            @RequestParam int voteType) {
+            @RequestParam int voteType,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            int totalVotes = voteService.voteQuestion(questionId, voteType,null);
+            if(userDetails == null){
+                return ResponseEntity.status(401).build();
+            }
+            int totalVotes = voteService.voteQuestion(questionId, voteType,userDetails.getUser());
             return ResponseEntity.ok(Map.of(
                     "totalVotes", totalVotes,
                     "success", true,
@@ -36,9 +42,13 @@ public class VoteController {
     @PostMapping("/answer/{answerId}")
     public ResponseEntity<?> voteAnswer(
             @PathVariable Long answerId,
-            @RequestParam int voteType) {
+            @RequestParam int voteType,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            int totalVotes = voteService.voteAnswer(answerId, voteType,null);
+            if(userDetails == null){
+                return ResponseEntity.status(401).build();
+            }
+            int totalVotes = voteService.voteAnswer(answerId, voteType,userDetails.getUser());
             return ResponseEntity.ok(Map.of(
                     "totalVotes", totalVotes,
                     "success", true,

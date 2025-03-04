@@ -3,6 +3,7 @@ package com.springapp.stackoverflow.service.serviceImpl;
 import com.springapp.stackoverflow.dto.AnswerDTO;
 import com.springapp.stackoverflow.model.Answer;
 import com.springapp.stackoverflow.model.Question;
+import com.springapp.stackoverflow.model.User;
 import com.springapp.stackoverflow.repository.AnswerRepository;
 import com.springapp.stackoverflow.repository.QuestionRepository;
 import com.springapp.stackoverflow.service.AnswerService;
@@ -49,6 +50,12 @@ public class AnswerServiceImpl implements AnswerService {
         answer.setImageUrl(imageUrl);
         answer.setVoteCount(0);
         answer.setQuestion(questionOpt.get());
+        if(answerDTO.getUserId() != null){
+            User user = new User();
+            user.setId(answerDTO.getUserId());
+
+            answer.setUser(user);
+        }
         answerRepository.save(answer);
 
         return modelMapper.map(answer, AnswerDTO.class);
@@ -64,7 +71,7 @@ public class AnswerServiceImpl implements AnswerService {
                     AnswerDTO dto = modelMapper.map(answer, AnswerDTO.class);
                     dto.setVoteCount(answer.getVoteCount());
                     if (answer.getUser() != null) {
-                        dto.setUserName("karthik");
+                        dto.setUserName(answer.getUser().getUsername());
                         dto.setUserId(answer.getUser().getId());
                     }
                     return dto;
