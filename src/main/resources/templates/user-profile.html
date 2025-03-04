@@ -11,16 +11,15 @@
 </head>
 
 <body>
-
 <div class="container">
 
   <div class="profile">
-    <img th:src="@{/images/user-dp.png}" alt="User Avatar">
+    <img th:src="@{${user.profilePic} == null ? '/images/user-dp.png' : user.profilePic}" alt="User Avatar">
     <div class="details">
-      <h2>Bergi</h2>
+      <h2 th:text="${user.username}">Bergi</h2>
       <p>
         <span class="material-symbols-outlined">cake</span>
-        <span> Member for 10 years</span>
+        <span th:data-createdAt="${user.createdAt}" id="created-date"> Member for 10 years</span>
       </p>
     </div>
   </div>
@@ -31,26 +30,27 @@
 
       <div class="about">
         <h4>About</h4>
-        <p>ecmascript-6 and promise evangelist.</p>
+        <p th:if="${user.bio != null}">ecmascript-6 and promise evangelist.</p>
+        <p th:if="${user.bio == null}">Nothing to show</p>
       </div>
 
       <div class="stats">
         <h4>Stats</h4>
         <div class="meta">
           <div class="item">
-            <p>665,256</p>
+            <p th:text="${user.reputations}">665,256</p>
             <p>reputation</p>
           </div>
           <div class="item">
-            <p>50.4m</p>
+            <p th:text="${user.reputations}">50.4m</p>
             <p>reached</p>
           </div>
           <div class="item">
-            <p>12,635</p>
+            <p th:text="${user.answers.size()}">12,635</p>
             <p>answers</p>
           </div>
           <div class="item">
-            <p>37</p>
+            <p th:text="${user.questions.size()}">37</p>
             <p>questions</p>
           </div>
         </div>
@@ -68,70 +68,26 @@
 
       <div class="questions" id="questions">
 
-        <h3>Questions</h4>
+        <h3>Questions</h3>
 
-          <div class="question">
+          <div th:each="question : ${user.questions}" th:object="${question}" class="question">
             <span class="is-answered">Q</span>
-            <p class="num-of-answers">582</p>
-            <a href="#">Using async/await with a forEach loop</a>
-            <p>Mar 4, 2025</p>
+            <p th:text="*{voteCount}" class="num-of-answers">582</p>
+            <a th:text="*{title}" th:href="@{'/questions/' + ${question.id}}">Using async/await with a forEach loop</a>
+            <p th:text="*{#temporals.format(createdAt, 'MMM d, yyyy')}">Mar 4, 2025</p>
           </div>
-
-          <div class="question">
-            <span class="is-answered">Q</span>
-            <p class="num-of-answers">582</p>
-            <a href="#">Using async/await with a forEach loop</a>
-            <p>Mar 4, 2025</p>
-          </div>
-
-          <div class="question">
-            <span>Q</span>
-            <p class="num-of-answers">582</p>
-            <a href="#">Using async/await with a forEach loop</a>
-            <p>Mar 4, 2025</p>
-          </div>
-
-          <div class="question">
-            <span>Q</span>
-            <p class="num-of-answers">582</p>
-            <a href="#">Using async/await with a forEach loop</a>
-            <p>Mar 4, 2025</p>
-          </div>
-
       </div>
 
       <div class="questions" id="answers">
 
         <h3>Answers</h3>
 
-        <div class="question">
+        <div th:each="answer : ${user.answers}" th:object="${answer}" class="question">
           <span class="is-answered">A</span>
-          <p class="num-of-answers">582</p>
-          <a href="#">Using async/await with a forEach loop</a>
-          <p>Mar 4, 2025</p>
+          <p th:text="*{voteCount}" class="num-of-answers">582</p>
+          <a th:text="*{question.title}" th:href="@{'/questions/' + *{question.id} + '#' + *{id}}">Using async/await with a forEach loop</a>
+          <p th:text="${#temporals.format(user.createdAt, 'MMM d, yyyy')}">Mar 4, 2025</p>
         </div>
-
-        <div class="question">
-          <span class="is-answered">A</span>
-          <p class="num-of-answers">582</p>
-          <a href="#">Using async/await with a forEach loop</a>
-          <p>Mar 4, 2025</p>
-        </div>
-
-        <div class="question">
-          <span>A</span>
-          <p class="num-of-answers">582</p>
-          <a href="#">Using async/await with a forEach loop</a>
-          <p>Mar 4, 2025</p>
-        </div>
-
-        <div class="question">
-          <span>A</span>
-          <p class="num-of-answers">582</p>
-          <a href="#">Using async/await with a forEach loop</a>
-          <p>Mar 4, 2025</p>
-        </div>
-
       </div>
 
     </div>
@@ -176,6 +132,43 @@
         allBtn.classList.add("selected");
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+        function getMembershipDuration(createdAt) {
+            const createdDate = new Date(createdAt);
+            const now = new Date();
+
+            let years = now.getFullYear() - createdDate.getFullYear();
+            let months = now.getMonth() - createdDate.getMonth();
+            let days = now.getDate() - createdDate.getDate();
+
+            // Adjust for negative days
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate(); // Add days from the previous month
+            }
+
+            // Adjust for negative months
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Formatting conditions
+            if (years === 0 && months === 0) {
+                return `Member for ${days} days`;
+            } else if (years === 0) {
+                return `Member for ${months} months, ${days} days`;
+            } else {
+                return `Member for ${years} years, ${months} months`;
+            }
+        }
+
+        const span = document.getElementById("created-date");
+        const createdAt = span.getAttribute("data-createdAt");
+        span.textContent = getMembershipDuration(createdAt);
+        console.log(createdAt)
+    });
 </script>
 
 </body>

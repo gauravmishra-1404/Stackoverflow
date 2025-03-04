@@ -59,16 +59,10 @@ public class UserController {
     }
 
     // Display user profile
-    @GetMapping("/profile")
-    public String showProfile(HttpSession session, Model model) {
-//        Long userId = (Long) session.getAttribute("userId");
-//        if (userId == null) {
-//            return "redirect:/login";
-//        }
-
-//        User user = userService.getUserById(userId);
-//        model.addAttribute("user", user);
-//        model.addAttribute("updateRequest", new UserUpdateRequest());
+    @GetMapping("/users/{id}")
+    public String showProfile(@PathVariable long id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
         return "user-profile";
     }
 

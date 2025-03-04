@@ -962,7 +962,7 @@
                 </h2>
 
                 <!-- Loop through answers -->
-                <div th:each="answer : ${answers}" class="answer">
+                <div th:each="answer : ${answers}" th:id="${answer.id}" class="answer">
                     <div class="post-layout">
                         <!-- Vote controls for answer -->
                         <div class="vote-cell">
