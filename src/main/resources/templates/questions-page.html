@@ -394,20 +394,20 @@
                         <div class="user-info">
                             <span th:if="${question.user != null}">
                                 <!-- Add default avatar -->
-                                <span class="user-avatar" th:if="${question.user.profileImage == null}"
+                                <span class="user-avatar" th:if="${question.user.profilePic == null}"
                                       th:text="${#strings.substring(question.user.username, 0, 1).toUpperCase()}">U</span>
-                                <img th:if="${question.user.profileImage != null}" th:src="${question.user.profileImage}" alt="User avatar"
+                                <img th:if="${question.user.profilePic != null}" th:src="${question.user.profilePic}" alt="User avatar"
                                      class="user-avatar">
 
                                 <a th:href="@{'/users/' + ${question.user.id}}" th:text="${question.user.username}">Libor P</a>
                                 <span th:text="${'asked ' + question.createdAt}">asked 2 mins ago</span>
-                              </span>
+                            </span>
                             <span th:unless="${question.user != null}">
                                 <!-- Default anonymous avatar -->
-                                <span class="user-avatar">J</span>
-                                Jasar Orion
+                                <span class="user-avatar">A</span>
+                                anonymous
                                 <span th:text="${'asked ' + question.createdAt}">asked 2 mins ago</span>
-                              </span>
+                            </span>
                         </div>
                     </div>
                 </div>

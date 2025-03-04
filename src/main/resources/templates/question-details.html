@@ -88,6 +88,20 @@
             margin-left: auto;
         }
 
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 3px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-color: #e1ecf4; /* Light blue background for default avatar */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #39739d; /* Dark blue text */
+            font-weight: bold;
+        }
+
         .button {
             background-color: #0a95ff;
             color: white;
@@ -873,15 +887,15 @@
                                     asked <span th:text="${#temporals.format(question.createdAt, 'MMM d, yyyy')}">Feb 20, 2023</span>
                                 </div>
                                 <div class="user-gravatar">
-                                    <a th:href="@{/users/{id}(id=${question.user.id})}">
-                                        <img th:src="${question.user.avatarUrl ?: '/images/default-avatar.png'}"
-                                             alt="User avatar">
-                                    </a>
+                                    <span class="user-avatar" th:if="${question.user.profilePic == null}"
+                                          th:text="${#strings.substring(question.user.username, 0, 1).toUpperCase()}">U</span>
+                                    <img th:if="${question.user.profilePic != null}" th:src="${question.user.profilePic}" alt="User avatar"
+                                         class="user-avatar">
                                 </div>
                                 <div class="user-details">
                                     <a th:href="@{/users/{id}(id=${question.user.id})}"
-                                       th:text="${question.user.displayName}">Username</a>
-                                    <div class="user-reputation" th:text="${question.user.reputation}">123</div>
+                                       th:text="${question.user.name}">Username</a>
+                                    <div class="user-reputation" th:text="${question.user.reputations}">123</div>
                                 </div>
                             </div>
                         </div>
@@ -948,7 +962,7 @@
                 </h2>
 
                 <!-- Loop through answers -->
-                <div th:each="answer : ${answers}" class="answer">
+                <div th:each="answer : ${answers}" th:id="${answer.id}" class="answer">
                     <div class="post-layout">
                         <!-- Vote controls for answer -->
                         <div class="vote-cell">
@@ -970,12 +984,13 @@
                             <!-- Answer actions -->
                             <div class="post-actions">
                                 <!-- User card for answer -->
-                                <div class="user-info" th:if="${answer.userName != null}">
+                                <div class="user-info">
                                     <div class="user-action-time">
                                         answered <span th:text="${#temporals.format(answer.createdAt, 'MMM d, yyyy')}">Feb 20, 2023</span>
                                     </div>
                                     <div class="user-details">
-                                        <a href="#" th:text="${answer.userName}">Username</a>
+                                        <a href="#" th:if="${answer.userName != null}" th:text="${answer.userName}">Username</a>
+                                        <span th:if="${answer.userName == null}">anonymous</span>
                                     </div>
                                 </div>
 
@@ -1184,7 +1199,6 @@
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    showLoginPrompt();
                     throw new Error('You must be logged in to vote');
                 }
                 return response.json().then(data => {
@@ -1204,6 +1218,7 @@
                 questionDownVoteBtn.classList.toggle('active');
                 questionUpVoteBtn.classList.remove('active');
             }
+            showErrorToast(data.message);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -1228,7 +1243,6 @@
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    showLoginPrompt();
                     throw new Error('You must be logged in to vote');
                 }
                 return response.json().then(data => {
@@ -1251,6 +1265,7 @@
                 downButton.classList.toggle('active');
                 upButton.classList.remove('active');
             }
+            showErrorToast(data.message);
         })
         .catch(error => {
             console.error('Error:', error);

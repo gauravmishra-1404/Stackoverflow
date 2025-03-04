@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/user-profile.css}">
+</head>
+
+<body>
+<div class="container">
+
+  <div class="profile">
+    <img th:src="@{${user.profilePic} == null ? '/images/user-dp.png' : user.profilePic}" alt="User Avatar">
+    <div class="details">
+      <h2 th:text="${user.username}">Bergi</h2>
+      <p>
+        <span class="material-symbols-outlined">cake</span>
+        <span th:data-createdAt="${user.createdAt}" id="created-date"> Member for 10 years</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="sidebar">
+
+      <div class="about">
+        <h4>About</h4>
+        <p th:if="${user.bio != null}">ecmascript-6 and promise evangelist.</p>
+        <p th:if="${user.bio == null}">Nothing to show</p>
+      </div>
+
+      <div class="stats">
+        <h4>Stats</h4>
+        <div class="meta">
+          <div class="item">
+            <p th:text="${user.reputations}">665,256</p>
+            <p>reputation</p>
+          </div>
+          <div class="item">
+            <p th:text="${user.reputations}">50.4m</p>
+            <p>reached</p>
+          </div>
+          <div class="item">
+            <p th:text="${user.answers.size()}">12,635</p>
+            <p>answers</p>
+          </div>
+          <div class="item">
+            <p th:text="${user.questions.size()}">37</p>
+            <p>questions</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="posts">
+
+      <div class="tabs">
+        <a class="selected" onclick="showQuestionsAndAnswers()" id="all-btn">All</a>
+        <a onclick="showQuestions()" id="question-btn">Questions</a>
+        <a onclick="showAnswers()" id="answer-btn">Answers</a>
+      </div>
+
+      <div class="questions" id="questions">
+
+        <h3>Questions</h3>
+
+          <div th:each="question : ${user.questions}" th:object="${question}" class="question">
+            <span class="is-answered">Q</span>
+            <p th:text="*{voteCount}" class="num-of-answers">582</p>
+            <a th:text="*{title}" th:href="@{'/questions/' + ${question.id}}">Using async/await with a forEach loop</a>
+            <p th:text="*{#temporals.format(createdAt, 'MMM d, yyyy')}">Mar 4, 2025</p>
+          </div>
+      </div>
+
+      <div class="questions" id="answers">
+
+        <h3>Answers</h3>
+
+        <div th:each="answer : ${user.answers}" th:object="${answer}" class="question">
+          <span class="is-answered">A</span>
+          <p th:text="*{voteCount}" class="num-of-answers">582</p>
+          <a th:text="*{question.title}" th:href="@{'/questions/' + *{question.id} + '#' + *{id}}">Using async/await with a forEach loop</a>
+          <p th:text="${#temporals.format(user.createdAt, 'MMM d, yyyy')}">Mar 4, 2025</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+    let allBtn = document.getElementById("all-btn");
+    let questionBtn = document.getElementById("question-btn");
+    let answerBtn = document.getElementById("answer-btn");
+
+    let questions = document.getElementById("questions");
+    let answers = document.getElementById("answers");
+
+    function showQuestions() {
+        questions.style.display = "block";
+        answers.style.display = "none";
+
+        allBtn.classList.remove("selected");
+        answerBtn.classList.remove("selected");
+        questionBtn.classList.add("selected");
+    }
+
+    function showAnswers() {
+        answers.style.display = "block";
+        questions.style.display = "none";
+
+        allBtn.classList.remove("selected");
+        questionBtn.classList.remove("selected");
+        answerBtn.classList.add("selected");
+    }
+
+    function showQuestionsAndAnswers() {
+        questions.style.display = "block";
+        answers.style.display = "block";
+
+        questionBtn.classList.remove("selected");
+        answerBtn.classList.remove("selected");
+        allBtn.classList.add("selected");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function getMembershipDuration(createdAt) {
+            const createdDate = new Date(createdAt);
+            const now = new Date();
+
+            let years = now.getFullYear() - createdDate.getFullYear();
+            let months = now.getMonth() - createdDate.getMonth();
+            let days = now.getDate() - createdDate.getDate();
+
+            // Adjust for negative days
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate(); // Add days from the previous month
+            }
+
+            // Adjust for negative months
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Formatting conditions
+            if (years === 0 && months === 0) {
+                return `Member for ${days} days`;
+            } else if (years === 0) {
+                return `Member for ${months} months, ${days} days`;
+            } else {
+                return `Member for ${years} years, ${months} months`;
+            }
+        }
+
+        const span = document.getElementById("created-date");
+        const createdAt = span.getAttribute("data-createdAt");
+        span.textContent = getMembershipDuration(createdAt);
+        console.log(createdAt)
+    });
+</script>
+
+</body>
+
+</html>

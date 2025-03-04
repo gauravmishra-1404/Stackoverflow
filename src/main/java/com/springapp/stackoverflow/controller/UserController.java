@@ -6,42 +6,28 @@ import com.springapp.stackoverflow.dto.UserDTO.SignupRequest;
 import com.springapp.stackoverflow.dto.UserDTO.UserUpdateRequest;
 import com.springapp.stackoverflow.model.User;
 import com.springapp.stackoverflow.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     // Display the login page
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
-    }
-
-    // Process login form submission
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute LoginRequest loginRequest,
-                               HttpSession session,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            User user = userService.login(loginRequest);
-            session.setAttribute("userId", user.getId());
-            session.setAttribute("username", user.getUsername());
-            return "redirect:/questions";
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/login";
-        }
     }
 
     // Display the signup page
@@ -73,17 +59,11 @@ public class UserController {
     }
 
     // Display user profile
-    @GetMapping("/profile")
-    public String showProfile(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
-
-        User user = userService.getUserById(userId);
+    @GetMapping("/users/{id}")
+    public String showProfile(@PathVariable long id, Model model) {
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("updateRequest", new UserUpdateRequest());
-        return "profile";
+        return "user-profile";
     }
 
     // Update user profile

@@ -3,6 +3,8 @@ package com.springapp.stackoverflow.controller;
 import com.springapp.stackoverflow.dto.AnswerDTO;
 import com.springapp.stackoverflow.dto.QuestionDTO;
 import com.springapp.stackoverflow.model.Tag;
+import com.springapp.stackoverflow.model.User;
+import com.springapp.stackoverflow.security.CustomUserDetails;
 import com.springapp.stackoverflow.service.AnswerService;
 import com.springapp.stackoverflow.service.CloudinaryService;
 import com.springapp.stackoverflow.service.QuestionService;
@@ -61,12 +63,8 @@ public class QuestionController {
             @RequestParam(value = "contentBlocksData", required = false) String[] contentBlocksData,
             @RequestParam(value = "contentBlockTypes", required = false) String[] contentBlockTypes,
             @RequestParam(value = "contentImages", required = false) MultipartFile[] contentImages,
-            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            return "ask-question-page";
-        }
 
         try {
             StringBuilder contentBuilder = new StringBuilder();
@@ -104,7 +102,11 @@ public class QuestionController {
                     }
                 }
             }
-
+            if(userDetails != null){
+                User user = new User();
+                user.setId(userDetails.getUser().getId());
+                questionDTO.setUser(user);
+            }
             questionDTO.setContent(contentBuilder.toString());
             //QuestionDTO savedQuestion = questionService.createQuestion(questionDTO, null, contentImageUrls);
             QuestionDTO savedQuestion = questionService.createQuestion(questionDTO, contentBuilder.toString(), contentImageUrls);
@@ -194,7 +196,7 @@ public class QuestionController {
         List<Tag> tags = questionService.findTagsByQuestionId(id);
         List<AnswerDTO> answers = answerService.getAnswersByQuestionId(id);
 
-        //System.out.println("Question content: " + questionDTO.getContent());
+        System.out.println("Question content: " + questionDTO.getContent());
         model.addAttribute("question", questionDTO);
         model.addAttribute("tag", tags);
         model.addAttribute("answers", answers);
@@ -286,7 +288,7 @@ public class QuestionController {
             @RequestParam(defaultValue = "DESC") String direction,
             Model model,
             @AuthenticationPrincipal UserDetails userDetails) {
-
+        //System.out.println("this is user details"+userDetails.getUsername());
         Sort.Direction sortDirection = Sort.Direction.fromString(direction.toUpperCase());
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
@@ -305,7 +307,7 @@ public class QuestionController {
                              @RequestParam(required = false) String tags,
                              @RequestParam(defaultValue = "0") int page,
                              @RequestParam(defaultValue = "10") int size,Model model){
-        //System.out.println("--------------------------- is I am hiting");
+        System.out.println("--------------------------- is I am hiting");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<QuestionDTO> questions;
