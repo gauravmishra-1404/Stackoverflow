@@ -88,6 +88,20 @@
             margin-left: auto;
         }
 
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 3px;
+            margin-right: 5px;
+            vertical-align: middle;
+            background-color: #e1ecf4; /* Light blue background for default avatar */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #39739d; /* Dark blue text */
+            font-weight: bold;
+        }
+
         .button {
             background-color: #0a95ff;
             color: white;
@@ -873,10 +887,10 @@
                                     asked <span th:text="${#temporals.format(question.createdAt, 'MMM d, yyyy')}">Feb 20, 2023</span>
                                 </div>
                                 <div class="user-gravatar">
-                                    <a th:href="@{/users/{id}(id=${question.user.id})}">
-                                        <img th:src="${question.user.profilePic ?: '/images/default-avatar.png'}"
-                                             alt="User avatar">
-                                    </a>
+                                    <span class="user-avatar" th:if="${question.user.profilePic == null}"
+                                          th:text="${#strings.substring(question.user.username, 0, 1).toUpperCase()}">U</span>
+                                    <img th:if="${question.user.profilePic != null}" th:src="${question.user.profilePic}" alt="User avatar"
+                                         class="user-avatar">
                                 </div>
                                 <div class="user-details">
                                     <a th:href="@{/users/{id}(id=${question.user.id})}"

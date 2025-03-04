@@ -66,10 +66,6 @@ public class QuestionController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             RedirectAttributes redirectAttributes) {
 
-//        if (bindingResult.hasErrors()) {
-//            return "ask-question-page";
-//        }
-
         try {
             StringBuilder contentBuilder = new StringBuilder();
             List<String> contentImageUrls = new ArrayList<>();
