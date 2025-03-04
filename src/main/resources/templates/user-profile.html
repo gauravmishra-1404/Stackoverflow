@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/user-profile.css}">
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="profile">
+    <img th:src="@{/images/user-dp.png}" alt="User Avatar">
+    <div class="details">
+      <h2>Bergi</h2>
+      <p>
+        <span class="material-symbols-outlined">cake</span>
+        <span> Member for 10 years</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="sidebar">
+
+      <div class="about">
+        <h4>About</h4>
+        <p>ecmascript-6 and promise evangelist.</p>
+      </div>
+
+      <div class="stats">
+        <h4>Stats</h4>
+        <div class="meta">
+          <div class="item">
+            <p>665,256</p>
+            <p>reputation</p>
+          </div>
+          <div class="item">
+            <p>50.4m</p>
+            <p>reached</p>
+          </div>
+          <div class="item">
+            <p>12,635</p>
+            <p>answers</p>
+          </div>
+          <div class="item">
+            <p>37</p>
+            <p>questions</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="posts">
+
+      <div class="tabs">
+        <a class="selected" onclick="showQuestionsAndAnswers()" id="all-btn">All</a>
+        <a onclick="showQuestions()" id="question-btn">Questions</a>
+        <a onclick="showAnswers()" id="answer-btn">Answers</a>
+      </div>
+
+      <div class="questions" id="questions">
+
+        <h3>Questions</h4>
+
+          <div class="question">
+            <span class="is-answered">Q</span>
+            <p class="num-of-answers">582</p>
+            <a href="#">Using async/await with a forEach loop</a>
+            <p>Mar 4, 2025</p>
+          </div>
+
+          <div class="question">
+            <span class="is-answered">Q</span>
+            <p class="num-of-answers">582</p>
+            <a href="#">Using async/await with a forEach loop</a>
+            <p>Mar 4, 2025</p>
+          </div>
+
+          <div class="question">
+            <span>Q</span>
+            <p class="num-of-answers">582</p>
+            <a href="#">Using async/await with a forEach loop</a>
+            <p>Mar 4, 2025</p>
+          </div>
+
+          <div class="question">
+            <span>Q</span>
+            <p class="num-of-answers">582</p>
+            <a href="#">Using async/await with a forEach loop</a>
+            <p>Mar 4, 2025</p>
+          </div>
+
+      </div>
+
+      <div class="questions" id="answers">
+
+        <h3>Answers</h3>
+
+        <div class="question">
+          <span class="is-answered">A</span>
+          <p class="num-of-answers">582</p>
+          <a href="#">Using async/await with a forEach loop</a>
+          <p>Mar 4, 2025</p>
+        </div>
+
+        <div class="question">
+          <span class="is-answered">A</span>
+          <p class="num-of-answers">582</p>
+          <a href="#">Using async/await with a forEach loop</a>
+          <p>Mar 4, 2025</p>
+        </div>
+
+        <div class="question">
+          <span>A</span>
+          <p class="num-of-answers">582</p>
+          <a href="#">Using async/await with a forEach loop</a>
+          <p>Mar 4, 2025</p>
+        </div>
+
+        <div class="question">
+          <span>A</span>
+          <p class="num-of-answers">582</p>
+          <a href="#">Using async/await with a forEach loop</a>
+          <p>Mar 4, 2025</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+    let allBtn = document.getElementById("all-btn");
+    let questionBtn = document.getElementById("question-btn");
+    let answerBtn = document.getElementById("answer-btn");
+
+    let questions = document.getElementById("questions");
+    let answers = document.getElementById("answers");
+
+    function showQuestions() {
+        questions.style.display = "block";
+        answers.style.display = "none";
+
+        allBtn.classList.remove("selected");
+        answerBtn.classList.remove("selected");
+        questionBtn.classList.add("selected");
+    }
+
+    function showAnswers() {
+        answers.style.display = "block";
+        questions.style.display = "none";
+
+        allBtn.classList.remove("selected");
+        questionBtn.classList.remove("selected");
+        answerBtn.classList.add("selected");
+    }
+
+    function showQuestionsAndAnswers() {
+        questions.style.display = "block";
+        answers.style.display = "block";
+
+        questionBtn.classList.remove("selected");
+        answerBtn.classList.remove("selected");
+        allBtn.classList.add("selected");
+    }
+
+</script>
+
+</body>
+
+</html>

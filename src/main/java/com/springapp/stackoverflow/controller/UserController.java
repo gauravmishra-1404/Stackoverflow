@@ -61,15 +61,15 @@ public class UserController {
     // Display user profile
     @GetMapping("/profile")
     public String showProfile(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
+//        Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
 
-        User user = userService.getUserById(userId);
-        model.addAttribute("user", user);
-        model.addAttribute("updateRequest", new UserUpdateRequest());
-        return "profile";
+//        User user = userService.getUserById(userId);
+//        model.addAttribute("user", user);
+//        model.addAttribute("updateRequest", new UserUpdateRequest());
+        return "user-profile";
     }
 
     // Update user profile
